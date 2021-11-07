@@ -58,15 +58,15 @@
  */
 int main(void)
 {
-    /* Configure board. */
-    bsp_board_init(BSP_INIT_LEDS);
+    /* Configure LED GPIO. */
+    gpio_leds_init();
 
     /* Toggle LEDs. */
     while (true)
     {
         for (int i = 0; i < LEDS_NUMBER; i++)
         {
-            led_blink_count(i);
+            gpio_led_blink_count(i);
         }
     }
 }
