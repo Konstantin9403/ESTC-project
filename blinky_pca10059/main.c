@@ -51,23 +51,22 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "blinky.h"
+#include "led.h"
+#include "gpio_types.h"
+
 
 /**
  * @brief Function for application main entry.
  */
 int main(void)
 {
-    /* Configure LED GPIO. */
-    gpio_leds_init();
+    /* Configure LEDs and BOTTON (GPIO). */
+    gpio_init((BSP_INIT_LEDS | BSP_INIT_BUTTONS));
 
     /* Toggle LEDs. */
     while (true)
     {
-        for (int i = 0; i < LEDS_NUMBER; i++)
-        {
-            gpio_led_blink_count(i);
-        }
+        gpio_leds_blink_count_if_pressed();
     }
 }
 

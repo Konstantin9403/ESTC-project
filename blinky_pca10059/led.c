@@ -1,4 +1,5 @@
-#include "blinky.h"
+#include "led.h"
+#include "button.h"
 #include "gpio_types.h"
 
 const int count_blinky[] = COUNT_BLINKY;
@@ -55,5 +56,40 @@ void gpio_led_blink_count(const uint32_t led_idx)
         gpio_led_invert(led_idx);
         nrf_delay_ms(500);
     }
+    return;
+}
+
+void gpio_leds_blink_count_if_pressed(void)
+{
+    static uint32_t blink_count = 0;
+    static uint32_t led_idx = 0;
+    static uint32_t led_time = TIME_ACTION_LED; //500mc
+
+    if (!gpio_button_state_get())
+        return;
+
+    if (led_time < TIME_ACTION_LED)
+    {
+        TIME_DELAY(led_time);
+        return;
+    }
+
+    if (blink_count < count_blinky[led_idx] * 2)
+    {
+        gpio_led_invert(led_idx);
+        led_time = 0;
+        blink_count++;
+    }
+
+    //increment led_idx
+    if (blink_count == count_blinky[led_idx] * 2)
+    {
+        blink_count = 0;
+        if (led_idx < LEDS_NUMBER - 1)
+            led_idx++;
+        else
+            led_idx = 0;
+    }
+
     return;
 }
