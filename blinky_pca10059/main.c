@@ -53,13 +53,32 @@
 
 #include "led.h"
 #include "gpio_types.h"
+#include "nordic_common.h"
 
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
+#include "nrf_log_default_backends.h"
+
+#include "nrf_log_backend_usb.h"
+
+#include "app_usbd.h"
+#include "app_usbd_serial_num.h"
+
+void logs_init()
+{
+    ret_code_t ret = NRF_LOG_INIT(NULL);
+    APP_ERROR_CHECK(ret);
+
+    NRF_LOG_DEFAULT_BACKENDS_INIT();
+}
 
 /**
  * @brief Function for application main entry.
  */
 int main(void)
 {
+    logs_init();
+    NRF_LOG_INFO("Starting up the test project with USB logging");
     /* Configure LEDs and BOTTON (GPIO). */
     gpio_init((BSP_INIT_LEDS | BSP_INIT_BUTTONS));
 
@@ -67,6 +86,11 @@ int main(void)
     while (true)
     {
         gpio_leds_blink_count_if_pressed();
+
+        NRF_LOG_INFO("My LOG!!!!");
+
+        LOG_BACKEND_USB_PROCESS();
+        NRF_LOG_PROCESS();
     }
 }
 
